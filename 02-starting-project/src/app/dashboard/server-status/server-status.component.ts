@@ -1,4 +1,11 @@
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  DestroyRef,
+  inject,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { ServerStatusType } from './server-status.model';
 
 @Component({
@@ -8,14 +15,14 @@ import { ServerStatusType } from './server-status.model';
   templateUrl: './server-status.component.html',
   styleUrl: './server-status.component.css',
 })
-export class ServerStatusComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ServerStatusComponent implements OnInit, AfterViewInit {
   currentStatus: ServerStatusType = 'unknown';
 
-  private interval?: ReturnType<typeof setInterval>;
+  private destroyRef = inject(DestroyRef);
 
   ngOnInit(): void {
     console.log('ON INIT!');
-    this.interval = setInterval(() => {
+    const interval = setInterval(() => {
       const rnd = Math.random();
 
       if (rnd < 0.5) {
@@ -26,13 +33,17 @@ export class ServerStatusComponent implements OnInit, AfterViewInit, OnDestroy {
         this.currentStatus = 'unknown';
       }
     }, 5000);
+
+    this.destroyRef.onDestroy(() => {
+      clearInterval(interval);
+    });
   }
 
   ngAfterViewInit(): void {
     console.log('AFTER VIEW INIT');
   }
 
-  ngOnDestroy(): void {
-    clearTimeout(this.interval);
-  }
+  // ngOnDestroy(): void {
+  //   clearTimeout(this.interval);
+  // }
 }
