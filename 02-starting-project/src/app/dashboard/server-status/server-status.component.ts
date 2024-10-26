@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ServerStatusType } from './server-status.model';
 
 @Component({
@@ -8,10 +8,10 @@ import { ServerStatusType } from './server-status.model';
   templateUrl: './server-status.component.html',
   styleUrl: './server-status.component.css',
 })
-export class ServerStatusComponent {
+export class ServerStatusComponent implements OnInit {
   currentStatus: ServerStatusType = 'unknown';
 
-  constructor() {
+  ngOnInit() {
     setInterval(() => {
       const rnd = Math.random();
 
