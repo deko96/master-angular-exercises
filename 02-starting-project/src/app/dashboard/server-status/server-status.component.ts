@@ -2,9 +2,11 @@ import {
   AfterViewInit,
   Component,
   DestroyRef,
+  effect,
   inject,
   OnDestroy,
   OnInit,
+  signal,
 } from '@angular/core';
 import { ServerStatusType } from './server-status.model';
 
@@ -16,9 +18,18 @@ import { ServerStatusType } from './server-status.model';
   styleUrl: './server-status.component.css',
 })
 export class ServerStatusComponent implements OnInit, AfterViewInit {
-  currentStatus: ServerStatusType = 'unknown';
+  currentStatus = signal<ServerStatusType>('unknown');
 
   private destroyRef = inject(DestroyRef);
+
+  constructor() {
+    effect((onCleanup) => {
+      console.log('Effect functions', this.currentStatus());
+      onCleanup(() => {
+        console.log('Effect cleanup');
+      });
+    });
+  }
 
   ngOnInit(): void {
     console.log('ON INIT!');
@@ -26,11 +37,11 @@ export class ServerStatusComponent implements OnInit, AfterViewInit {
       const rnd = Math.random();
 
       if (rnd < 0.5) {
-        this.currentStatus = 'online';
+        this.currentStatus.set('online');
       } else if (rnd < 0.9) {
-        this.currentStatus = 'offline';
+        this.currentStatus.set('offline');
       } else {
-        this.currentStatus = 'unknown';
+        this.currentStatus.set('unknown');
       }
     }, 5000);
 
