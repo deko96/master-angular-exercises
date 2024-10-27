@@ -2,8 +2,8 @@
   <h3>
     <div
       [class]="{
-        'ticket-open': true,
-        'ticket-closed': false
+        'ticket-open': status === 'open',
+        'ticket-closed': status === 'closed'
       }"
     ></div>
     <button (click)="onToggleDetails()">
@@ -46,7 +46,7 @@
   @if (showDetails) {
   <p>{{ request }}</p>
 
-  @if (true) {
-  <p><button>Mark as completed</button></p>
+  @if (status === 'open') {
+  <p><button (click)="onMarkAsCompleted()">Mark as completed</button></p>
   } }
 </article>
